@@ -13,8 +13,8 @@ public class CalculoTaxa {
     private static final BigDecimal CEM_MIL = new BigDecimal("100000");
 
     private static final List<Regra> regras = List.of(
-            new Regra((valor, cidade) -> valor.compareTo(SETENTA_MIL) >= 0 && "SP".equalsIgnoreCase(cidade), new BigDecimal("0.05")),
-            new Regra((valor, cidade) -> valor.compareTo(SETENTA_MIL) >= 0, new BigDecimal("0.04")),
+            new Regra((valor, cidade) -> valor.compareTo(SETENTA_MIL) <= 0 && "SP".equalsIgnoreCase(cidade), new BigDecimal("0.05")),
+            new Regra((valor, cidade) -> valor.compareTo(SETENTA_MIL) <= 0, new BigDecimal("0.04")),
             new Regra((valor, cidade) -> valor.compareTo(SETENTA_MIL) >= 0 && valor.compareTo(CEM_MIL) < 0, new BigDecimal("0.055")),
             new Regra((valor, cidade) -> valor.compareTo(CEM_MIL) >= 0, new BigDecimal("0.06"))
     );

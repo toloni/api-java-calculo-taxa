@@ -8,21 +8,21 @@ import org.mockito.MockedStatic;
 import java.math.BigDecimal;
 
 import static org.junit.jupiter.api.Assertions.*;
+
 class SeguroVeiculoServiceImplTest {
 
     private final SeguroVeiculoServiceImpl service = new SeguroVeiculoServiceImpl();
 
     @Test
-    void testCalcularSeguroVeiculoComSucesso() {
+    void testCalcularSeguroVeiculo_ComSucesso() {
         // Arrange
         CustomerDTO input = new CustomerDTO(
                 "João",
                 null,
                 null,
                 "SP",
-                "50000", // vehicle_value
-                null     // insurance_value
-        );
+                "50000",
+                null);
 
         try (MockedStatic<CalculoTaxa> mocked = org.mockito.Mockito.mockStatic(CalculoTaxa.class)) {
             mocked.when(() -> CalculoTaxa.calcularTaxa(new BigDecimal("50000"), "SP"))
@@ -39,15 +39,33 @@ class SeguroVeiculoServiceImplTest {
     }
 
     @Test
-    void testCalcularSeguroVeiculoComErro() {
+    void testCalcularSeguroVeiculo_NaoPermitir_ValorSeguro_Zerado() {
+        CustomerDTO input = new CustomerDTO(
+                "Ana",
+                null,
+                null,
+                "RJ",
+                "0",
+                null);
+        try (MockedStatic<CalculoTaxa> mocked = org.mockito.Mockito.mockStatic(CalculoTaxa.class)) {
+            mocked.when(() -> CalculoTaxa.calcularTaxa(new BigDecimal("0"), "RJ"))
+                    .thenReturn(BigDecimal.ZERO);
+
+            CustomerDTO result = service.calcularSeguroVeiculo(input);
+
+            assertNull(result);
+        }
+    }
+
+    @Test
+    void testCalcularSeguroVeiculo_ComErro() {
         CustomerDTO input = new CustomerDTO(
                 "Maria",
                 null,
                 null,
                 "BH",
                 "-50000", // vehicle_value
-                null
-        );
+                null);
 
         try (MockedStatic<CalculoTaxa> mocked = org.mockito.Mockito.mockStatic(CalculoTaxa.class)) {
             mocked.when(() -> CalculoTaxa.calcularTaxa(new BigDecimal("-50000"), "BH"))
