@@ -64,11 +64,11 @@ class SeguroVeiculoServiceImplTest {
                 null,
                 null,
                 "BH",
-                "-50000", // vehicle_value
+                "AAA", // vehicle_value
                 null);
 
         try (MockedStatic<CalculoTaxa> mocked = org.mockito.Mockito.mockStatic(CalculoTaxa.class)) {
-            mocked.when(() -> CalculoTaxa.calcularTaxa(new BigDecimal("-50000"), "BH"))
+            mocked.when(() -> CalculoTaxa.calcularTaxa(new BigDecimal("AAA"), "BH"))
                     .thenThrow(new RuntimeException("Valor Invalido"));
 
             RuntimeException exception = assertThrows(RuntimeException.class, () -> {
