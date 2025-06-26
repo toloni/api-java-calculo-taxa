@@ -15,31 +15,25 @@ public class SeguroVeiculoServiceImpl implements SeguroVeiculoService {
     @Override
     public CustomerDTO calcularSeguroVeiculo(CustomerDTO customer) {
 
-        var valorSeguro = BigDecimal.ZERO;
-
-        BigDecimal valorVeiculo = new BigDecimal(customer.getVehicle_value());
-        String cidade = customer.getLocation();
-
         try {
-            var taxa = CalculoTaxa.calcularTaxa(valorVeiculo, cidade);
-            valorSeguro = taxa.multiply(valorVeiculo);
+            BigDecimal valorVeiculo = new BigDecimal(customer.getVehicle_value());
+            BigDecimal taxa = CalculoTaxa.calcularTaxa(valorVeiculo, customer.getLocation());
+            BigDecimal valorSeguro = taxa.multiply(valorVeiculo);
+
+            if (valorSeguro.compareTo(BigDecimal.ZERO) <= 0) {
+                return null;
+            }
+
+            return new CustomerDTO(
+                    customer.getName(),
+                    null,
+                    null,
+                    customer.getLocation(),
+                    null,
+                    valorSeguro.toString());
 
         } catch (Exception e) {
-            throw new RuntimeException(ERRO_CALCULO_TAXA + e.getMessage());
+            throw new RuntimeException(ERRO_CALCULO_TAXA + " " + e.getMessage(), e);
         }
-
-        // retornar mensagem api valor seguro invalido
-
-        if (valorSeguro.compareTo(BigDecimal.ZERO) <= 0) {
-            return null;
-        }
-
-        return new CustomerDTO(
-                customer.getName(),
-                null,
-                null,
-                customer.getLocation(),
-                null,
-                valorSeguro.toString());
     }
 }
