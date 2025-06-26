@@ -10,8 +10,6 @@ import java.math.BigDecimal;
 @Service
 public class SeguroVeiculoServiceImpl implements SeguroVeiculoService {
 
-    private static final String ERRO_CALCULO_TAXA = "Não foi possível calcular a taxa para o veículo.";
-
     @Override
     public CustomerDTO calcularSeguroVeiculo(CustomerDTO customer) {
 
@@ -33,7 +31,7 @@ public class SeguroVeiculoServiceImpl implements SeguroVeiculoService {
                     valorSeguro.toString());
 
         } catch (Exception e) {
-            throw new RuntimeException(ERRO_CALCULO_TAXA + " " + e.getMessage(), e);
+            throw new RuntimeException("Não foi possível calcular a taxa para o veículo. " + e.getMessage(), e);
         }
     }
 }
